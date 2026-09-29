@@ -1,3 +1,4 @@
+import ast
 import pytest
 import task_00_distance
 import task_01_circle
@@ -24,7 +25,7 @@ def test_circle(capsys):
     """Тест площади круга и попадания точек."""
     task_01_circle.run()
     output_lines = [line.strip() for line in capsys.readouterr().out.strip().split('\n')]
-    
+
     # Площадь: 3.1415926 * 42^2 = 5541.7693
     assert output_lines[0] == '5541.7693'
     # Точка 1: sqrt(23^2 + 34^2) ≈ 41.04 <= 42 -> True
@@ -89,25 +90,27 @@ def test_garden(capsys):
     """Тест операций с множествами цветов."""
     task_08_garden.run()
     output_lines = [line.strip() for line in capsys.readouterr().out.strip().split('\n')]
-    
-    # Преобразуем строковые представления множеств обратно в set для устойчивости к порядку элементов
-    all_flowers = eval(output_lines[0])
-    both = eval(output_lines[1])
-    only_garden = eval(output_lines[2])
-    only_meadow = eval(output_lines[3])
+
+    # Безопасный парсинг строковых представлений множеств через ast.literal_eval
+    all_flowers = ast.literal_eval(output_lines[0])
+    both = ast.literal_eval(output_lines[1])
+    only_garden = ast.literal_eval(output_lines[2])
+    only_meadow = ast.literal_eval(output_lines[3])
 
     assert both == {'ромашка', 'одуванчик'}
     assert only_garden == {'роза', 'гладиолус', 'подсолнух'}
     assert only_meadow == {'клевер', 'мак'}
-    assert all_flowers == {'ромашка', 'роза', 'одуванчик', 'гладиолус', 'подсолнух', 'клевер', 'мак'}
+    assert all_flowers == {'ромашка', 'роза', 'одуванчик', 'гладиолус',
+                           'подсолнух', 'клевер', 'мак'}
 
 
 def test_shopping(capsys):
     """Тест словаря цен с двумя минимальными магазинами."""
     task_09_shopping.run()
     captured = capsys.readouterr().out
-    sweets_dict = eval(captured.strip())
-    
+    # Безопасный парсинг строкового представления словаря
+    sweets_dict = ast.literal_eval(captured.strip())
+
     assert 'печенье' in sweets_dict
     assert sweets_dict['конфеты'][0]['shop'] == 'магнит'
     assert sweets_dict['конфеты'][0]['price'] == 30.99

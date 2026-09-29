@@ -56,6 +56,6 @@ def run():
 
     print(sweets)
 
-
+# Выводить лучше построчно 
 if __name__ == '__main__':
     run()
